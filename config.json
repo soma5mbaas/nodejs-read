@@ -1,0 +1,20 @@
+{
+	"port": 8100,
+	"namespace": "ns",
+	"database": {
+		"redis": {
+			"masters":[
+				{
+					"host": "localhost",
+					"port": 6379
+				}
+			],
+			"slaves": [
+				{
+					"host": "localhost",
+					"port": 6379
+				}
+			]
+		}
+	}
+}
