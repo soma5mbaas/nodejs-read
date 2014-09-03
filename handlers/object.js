@@ -5,7 +5,7 @@ var keys = require('../utils/keys');
 
 exports.retrieveObejct = function(input, callback) {
 	var key = keys.objectDetail(input.class, input.objectId, input.applicationId);
-	console.log(key);
+
 	redis.hget( key, input.objectId , function(error, value) {
 		if( error ) {
 			// send error
@@ -33,9 +33,3 @@ exports.query = function(input, callback) {
 		}
 	});
 };
-
-
-// stage.haru.io:6379[9]> keys ns:gameobejcts:*:appid:keys
-// 1) "ns:gameobejcts:123456789f:appid:keys"
-// 2) "ns:gameobejcts::appid:keys"
-
