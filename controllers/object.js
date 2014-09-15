@@ -20,14 +20,40 @@ exports.retrieve = function( req, res ) {
 exports.query = function( req, res ) {
 	var input = util.getHeader(req);
 
+	var queries = req.query;
+	var commands = Object.keys( queries );
+
 	input.class = req.params.classname;
-	input.where = req.param('where');
+
+
+	// for( var i = 0; i < commands.length; i++ ) {
+	// 	var command = commands[i];
+
+	// 	if( command === 'where' ) {
+	// 		var query = JSON.parse(queries[command]);
+	// 		var properties = Object.keys(query);
+
+	// 		for( var j = 0; j < properties.length; j++ ){
+	// 			var property = properties[j];
+	// 			var value = query[property];
+
+	// 			var type = typeof value;
+
+	// 			if( type === 'object' ) {
+
+	// 			} else if( type === 'string' || type === 'number' || type === 'boolean' ) {
+
+	// 			} 
+	// 		}
+
+	// 	} 
+	// }
 
 	objectHandler.query(input, function(error, results) {
 		if( error ) {
 			// send error
 		} else {
-			res.json( {results: results} );
+			res.json( {results: true} );
 		}
 	});
 };
@@ -56,6 +82,7 @@ order=-score
 order=score,-name
 
 limit=200
+
 skip=400
 
 keys=score,playerName
@@ -69,6 +96,4 @@ where={"post":{"__type":"Pointer","className":"Post","objectId":"8TOXdXf3tz"}}
 where={"post":{"$inQuery":{"where":{"image":{"$exists":true}},"className":"Post"}}}
 
 where={"post":{"$notInQuery":{"where":{"image":{"$exists":true}},"className":"Post"}}}
-
-
 **/
