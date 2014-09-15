@@ -76,10 +76,12 @@ Redis.prototype.hgetallMulti = function( key, callback ) {
 		var multi = conn.multi();
 
 		for( var i = 0; i < results.length; i++ ) {
+			console.log("#1 ->>> ",results[i]);
 			multi.hgetall( keys.objectDetail('gameobejcts', results[i], 'appid') );
 		}
 
 		multi.exec(function(error, results) {
+			console.log("#2->>> ",results);
 			callback( error, results );
 		});	
 	});
