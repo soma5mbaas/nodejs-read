@@ -18,9 +18,13 @@ function getAPIInfo( req ) {
 
 exports.getHeader = function( req ) {
 	var header = {};
+	// 기본 정보 
 	header.applicationId = req.get('Application-Id');
-	header.userId = req.get('User-Id');
 	header.api = getAPIInfo( req );
+
+	// 옵션 정보
+	if( req.params.classname ) header.class = req.params.classname;
+	if( req.params.objectid ) header.objectId = req.params.objectid;  
 
 	return header;
 };
