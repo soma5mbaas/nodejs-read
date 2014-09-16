@@ -21,41 +21,59 @@ exports.query = function( req, res ) {
 	var input = util.getHeader(req);
 
 	var queries = req.query;
-	var commands = Object.keys( queries );
 
-	input.class = req.params.classname;
+	console.log(queries);
 
+	objectHandler.retrieveObejctAll(input, function(error, results) {
+		if(error) {}
 
-	// for( var i = 0; i < commands.length; i++ ) {
-	// 	var command = commands[i];
-
-	// 	if( command === 'where' ) {
-	// 		var query = JSON.parse(queries[command]);
-	// 		var properties = Object.keys(query);
-
-	// 		for( var j = 0; j < properties.length; j++ ){
-	// 			var property = properties[j];
-	// 			var value = query[property];
-
-	// 			var type = typeof value;
-
-	// 			if( type === 'object' ) {
-
-	// 			} else if( type === 'string' || type === 'number' || type === 'boolean' ) {
-
-	// 			} 
-	// 		}
-
-	// 	} 
-	// }
-
-	objectHandler.query(input, function(error, results) {
-		if( error ) {
-			// send error
-		} else {
-			res.json( {results: true} );
-		}
+		res.json(results);
 	});
+
+	// if( queries ) {
+	// 	// var commands = Object.keys( queries );
+
+	// 	// input.class = req.params.classname;
+
+
+	// 	// for( var i = 0; i < commands.length; i++ ) {
+	// 	// 	var command = commands[i];
+
+	// 	// 	if( command === 'where' ) {
+	// 	// 		var query = JSON.parse(queries[command]);
+	// 	// 		var properties = Object.keys(query);
+
+	// 	// 		for( var j = 0; j < properties.length; j++ ){
+	// 	// 			var property = properties[j];
+	// 	// 			var value = query[property];
+
+	// 	// 			var type = typeof value;
+
+	// 	// 			if( type === 'object' ) {
+
+	// 	// 			} else if( type === 'string' || type === 'number' || type === 'boolean' ) {
+
+	// 	// 			} 
+	// 	// 		}
+
+	// 	// 	} 
+	// 	// }
+
+	// 	// objectHandler.query(input, function(error, results) {
+	// 	// 	if( error ) {
+	// 	// 		// send error
+	// 	// 	} else {
+	// 	// 		console.log("a");
+	// 	// 		res.json( {results: true} );
+	// 	// 	}
+	// 	// });
+	// } else {
+	// 	objectHandler.retrieveObejctAll(input, function(error, results) {
+	// 		if(error) {}
+
+	// 		res.json(results);
+	// 	});
+	// }
 };
 
 
