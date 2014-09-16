@@ -19,8 +19,7 @@ function Redis() {
 Redis.prototype.connect = function() {
 	var self = this;
 
-	for( var i = 0; i < slaves.length; i++ ){
-		var slave = slaves[i];
+	slaves.forEach(function(slave) {
 		var client = redis.createClient(slave.port, slave.host, {parser: 'hiredis'});
 
 		client.on( 'connect', function() {
@@ -34,7 +33,8 @@ Redis.prototype.connect = function() {
 		client.select(0);
 
 		self.slaveConnectors.push(client);
-	}
+	});
+
 };
 
 Redis.prototype.hget = function(key, field, callback) {
@@ -75,15 +75,13 @@ Redis.prototype.zrange = function( key, start, end, callback ) {
 
 Redis.prototype.hgetallMulti = function( applicationId, className, objectIds, callback ) {
 	var self = this;
-
 	var conn = self.getConnection();
 
 	conn.select(0);
 
 	var multi = conn.multi();
 
-	objectIds.forEach(function(objectId) {
-		console.log(keys.objectDetail (className, objectId, applicationId));
+	(objectIds || []).forEach(function(objectId) {
 		multi.hgetall( keys.objectDetail (className, objectId, applicationId) );
 	});
 
@@ -98,7 +96,6 @@ Redis.prototype.smembers = function( key, callback ) {
 
 	conn.select(0);
 
-	
 	conn.smembers(key, callback);	
 };
 

@@ -1,79 +1,58 @@
 var util = require('../utils/util');
 var objectHandler = require('../handlers/object');
+var schemaHandler = require('../handlers/schema');
+var sendError = require('../utils/util').sendError;
+
 
 exports.retrieve = function( req, res ) {
 	var input = util.getHeader(req);
 
 	input.class = req.params.classname;
 	input.objectId = req.params.objectId;
+	schemaHandler.retrieveSchema(input, function(error, schema) {
+		objectHandler.retrieveObejct(input, function(error, result) {
+			if( error ) { return sendError(error, res, errorCode.OTHER_CAUSE); } 
+			if( result == null ) {  return sendError(error, res, errorCode.MISSING_OBJECT_ID);  }
 
-	objectHandler.retrieveObejct(input, function(error, result) {
-		if( error ) {
-			// send error
-		} else {
-			result = result || {error: null};
-			res.json(result);
-		}
+			return res.json( util.parseToJson(schema, result) );
+		
+		});
 	});
 };
 
 exports.query = function( req, res ) {
 	var input = util.getHeader(req);
+	var queryKeys = Object.keys(req.query);
 
-	var queries = req.query;
+	if( queryKeys.length < 1 ) {
+		schemaHandler.retrieveSchema(input, function(error, schema) {
+			objectHandler.retrieveObejctAll(input, function(error, results) {
+				if( error ) { return sendError(error, res, errorCode.OTHER_CAUSE); } 
+				if( results == null) {  return sendError(res, errorCode.MISSING_OBJECT_ID);  }
 
-	console.log(queries);
+				return res.json(results);
+			});
+		});
+	} else {
+		queryKeys.forEach(function(key) {
+			if( key === 'page' ) {
+				var condition = JSON.parse(req.query[key]);
 
-	objectHandler.retrieveObejctAll(input, function(error, results) {
-		if(error) {}
+				input.start = condition.pageSize * (condition.pageNumber-1);
+				input.end = condition.pageSize * condition.pageNumber - 1;
 
-		res.json(results);
-	});
+				schemaHandler.retrieveSchema(input, function(error, schema) {
+					objectHandler.retrieveObejctAll(input, function(error, results) {
+						if( error ) { return sendError(error, res, errorCode.OTHER_CAUSE); } 
 
-	// if( queries ) {
-	// 	// var commands = Object.keys( queries );
-
-	// 	// input.class = req.params.classname;
-
-
-	// 	// for( var i = 0; i < commands.length; i++ ) {
-	// 	// 	var command = commands[i];
-
-	// 	// 	if( command === 'where' ) {
-	// 	// 		var query = JSON.parse(queries[command]);
-	// 	// 		var properties = Object.keys(query);
-
-	// 	// 		for( var j = 0; j < properties.length; j++ ){
-	// 	// 			var property = properties[j];
-	// 	// 			var value = query[property];
-
-	// 	// 			var type = typeof value;
-
-	// 	// 			if( type === 'object' ) {
-
-	// 	// 			} else if( type === 'string' || type === 'number' || type === 'boolean' ) {
-
-	// 	// 			} 
-	// 	// 		}
-
-	// 	// 	} 
-	// 	// }
-
-	// 	// objectHandler.query(input, function(error, results) {
-	// 	// 	if( error ) {
-	// 	// 		// send error
-	// 	// 	} else {
-	// 	// 		console.log("a");
-	// 	// 		res.json( {results: true} );
-	// 	// 	}
-	// 	// });
-	// } else {
-	// 	objectHandler.retrieveObejctAll(input, function(error, results) {
-	// 		if(error) {}
-
-	// 		res.json(results);
-	// 	});
-	// }
+						return res.json( util.parseToJsons(schema, results) );
+					});
+				});
+			} else {
+				return res.json('미구현 ㅋ');
+			}
+		});
+	}
 };
 
 
@@ -102,6 +81,9 @@ order=score,-name
 limit=200
 
 skip=400
+
+page={ "pageSize": 50, "pageNumber": "1" }
+
 
 keys=score,playerName
 
