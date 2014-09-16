@@ -22,6 +22,9 @@
 		}
 	},
 	"query": {
-		"MAX_OBJECT_LENGTH": 50
+		"range":{
+			"RANGE_DEFALUT_START": 0,
+			"RANGE_DEFALUT_END": 50
+		}
 	}
 }
