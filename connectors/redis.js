@@ -64,29 +64,32 @@ Redis.prototype.hgetall = function( key, callback ) {
 	conn.hgetall(key, callback);
 };
 
-Redis.prototype.hgetallMulti = function( key, callback ) {
+Redis.prototype.zrange = function( key, start, end, callback ) {
 	var self = this;
 
 	var conn = self.getConnection();
 
+	conn.select(0);
+	conn.zrange(key, start, end, callback);
+};
+
+Redis.prototype.hgetallMulti = function( applicationId, className, objectIds, callback ) {
+	var self = this;
+
+	var conn = self.getConnection();
 
 	conn.select(0);
 
-	conn.smembers('ns:gameobejcts:appid:keys', function( error, results ) {
-		var multi = conn.multi();
+	var multi = conn.multi();
 
-		for( var i = 0; i < results.length; i++ ) {
-			console.log("#1 ->>> ",results[i]);
-			multi.hgetall( keys.objectDetail('gameobejcts', results[i], 'appid') );
-		}
-
-		multi.exec(function(error, results) {
-			console.log("#2->>> ",results);
-			callback( error, results );
-		});	
+	objectIds.forEach(function(objectId) {
+		console.log(keys.objectDetail (className, objectId, applicationId));
+		multi.hgetall( keys.objectDetail (className, objectId, applicationId) );
 	});
 
-
+	multi.exec(function(error, results) {
+		return callback( error, results );
+	});
 };
 
 Redis.prototype.smembers = function( key, callback ) {
