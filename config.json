@@ -6,15 +6,22 @@
 			"masters":[
 				{
 					"host": "localhost",
-					"port": 6379
+					"port": 6400
 				}
 			],
 			"slaves": [
 				{
 					"host": "localhost",
-					"port": 6379
+					"port": 6401
+				},
+				{
+					"host": "localhost",
+					"port": 6402
 				}
 			]
 		}
+	},
+	"query": {
+		"MAX_OBJECT_LENGTH": 50
 	}
 }
