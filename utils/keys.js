@@ -1,7 +1,7 @@
 var ns = require('../config').namespace;
 
 exports.schemaKey = function(applicationId, className) {
-	return nameSpace + ':schema:'+ className + ':' +  applicationId;
+	return ns + ':schema:'+ className + ':' +  applicationId;
 };
 
 exports.objectDetail = function( className, objectId, applicationId ) {
