@@ -82,7 +82,7 @@ Redis.prototype.hgetallMulti = function( applicationId, className, objectIds, ca
 	var multi = conn.multi();
 
 	(objectIds || []).forEach(function(objectId) {
-		multi.hgetall( keys.objectDetail (className, objectId, applicationId) );
+		multi.hgetall( keys.entityDetail (className, objectId, applicationId) );
 	});
 
 	multi.exec(function(error, results) {
