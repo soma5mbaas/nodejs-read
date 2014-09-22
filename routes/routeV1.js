@@ -1,10 +1,10 @@
 var express = require('express');
 var router = express.Router();
-var object = require('../controllers/object');
+var entity = require('../controllers/entity');
 
 
-// object
-router.get('/classes/:classname/:objectId', object.retrieve );
-router.get('/classes/:classname', object.query );
+// entity
+router.get('/classes/:classname/:_id', entity.retrieve );
+router.get('/classes/:classname', entity.query );
 
 module.exports = router;

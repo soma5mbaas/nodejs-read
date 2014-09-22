@@ -4,10 +4,10 @@ exports.schemaKey = function(applicationId, className) {
 	return ns + ':schema:'+ className + ':' +  applicationId;
 };
 
-exports.objectDetail = function( className, objectId, applicationId ) {
-	return ns+':'+className+':'+objectId+':'+applicationId+':detail';
+exports.entityDetail = function( className, _id, applicationId ) {
+	return ns+':'+className+':'+_id+':'+applicationId+':detail';
 };
 
-exports.objectKey = function( className, applicationId ) {
+exports.entityKey = function( className, applicationId ) {
 	return ns+':'+className+':'+applicationId+':keys';
 };

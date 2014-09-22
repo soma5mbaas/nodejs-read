@@ -1,5 +1,5 @@
 var util = require('../utils/util');
-var objectHandler = require('../handlers/object');
+var entityHandler = require('../handlers/entity');
 var schemaHandler = require('../handlers/schema');
 var sendError = require('../utils/util').sendError;
 
@@ -8,11 +8,11 @@ exports.retrieve = function( req, res ) {
 	var input = util.getHeader(req);
 
 	input.class = req.params.classname;
-	input.objectId = req.params.objectId;
+	input._id = req.params._id;
 	schemaHandler.retrieveSchema(input, function(error, schema) {
-		objectHandler.retrieveObejct(input, function(error, result) {
+		entityHandler.retrieveObejct(input, function(error, result) {
 			if( error ) { return sendError(error, res, errorCode.OTHER_CAUSE); } 
-			if( result == null ) {  return sendError(error, res, errorCode.MISSING_OBJECT_ID);  }
+			if( result == null ) {  return sendError(error, res, errorCode.MISSING_ENTITY_ID);  }
 
 			return res.json( util.parseToJson(schema, result) );
 		
@@ -26,9 +26,9 @@ exports.query = function( req, res ) {
 
 	if( queryKeys.length < 1 ) {
 		schemaHandler.retrieveSchema(input, function(error, schema) {
-			objectHandler.retrieveObejctAll(input, function(error, results) {
+			entityHandler.retrieveObejctAll(input, function(error, results) {
 				if( error ) { return sendError(error, res, errorCode.OTHER_CAUSE); } 
-				if( results == null) {  return sendError(res, errorCode.MISSING_OBJECT_ID);  }
+				if( results == null) {  return sendError(res, errorCode.MISSING_ENTITY_ID);  }
 
 				return res.json(results);
 			});
@@ -42,7 +42,7 @@ exports.query = function( req, res ) {
 				input.end = condition.pageSize * condition.pageNumber - 1;
 
 				schemaHandler.retrieveSchema(input, function(error, schema) {
-					objectHandler.retrieveObejctAll(input, function(error, results) {
+					entityHandler.retrieveObejctAll(input, function(error, results) {
 						if( error ) { return sendError(error, res, errorCode.OTHER_CAUSE); } 
 
 						return res.json( util.parseToJsons(schema, results) );
@@ -91,7 +91,7 @@ where={"arrayKey":2}
 
 where={"arrayKey":{"$all":[2,3,4]}}
 
-where={"post":{"__type":"Pointer","className":"Post","objectId":"8TOXdXf3tz"}}
+where={"post":{"__type":"Pointer","className":"Post","_id":"8TOXdXf3tz"}}
 
 where={"post":{"$inQuery":{"where":{"image":{"$exists":true}},"className":"Post"}}}
 
