@@ -1,6 +1,8 @@
 
 var redis = require('../connectors/redis');
-var keys = require('../utils/keys');
+var mongodb = require('../connectors/mongodb');
+
+var keys = require('haru-nodejs-util').keys;
 var range = require('../config').query.range;
 
 exports.retrieveObejct = function(input, callback) {
@@ -22,10 +24,10 @@ exports.retrieveObejctAll = function(input, callback) {
 
 };
 
-exports.query = function(input, callback) {
-	var entityKey = keys.entityKey(input.class, input.applicationId);
+exports.query = function(input, condition, callback) {
+	var collectionKey = keys.collectionKey(input.class, input.applicationId);
 
-	redis.hgetallMulti(input, function(error, results) {
+	mongodb.find( collectionKey, condition, function(error, results) {
 		callback(error, results);
 	});
 };

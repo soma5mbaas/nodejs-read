@@ -1,6 +1,6 @@
 
 var redis = require('../connectors/redis');
-var keys = require('../utils/keys');
+var keys = require('haru-nodejs-util').keys;
 
 exports.retrieveSchema = function(input, callback) {
 	var key = keys.schemaKey(input.applicationId, input.class);

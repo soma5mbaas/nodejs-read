@@ -5,7 +5,7 @@ var slaves = require('../config').database.redis.slaves;
 
 var async = require('async');
 
-var keys = require('../utils/keys');
+var keys = require('haru-nodejs-util').keys;
 
 var MAX_SLAVE_COUNTER = 100000000;
 
@@ -23,11 +23,11 @@ Redis.prototype.connect = function() {
 		var client = redis.createClient(slave.port, slave.host, {parser: 'hiredis'});
 
 		client.on( 'connect', function() {
-			console.log( 'Redis[' + slave.host + ':' + slave.port + '] connect ' );
+			log.info('[%d] %s:%d Redis Connected', process.pid, slave.host, slave.port);
 		}).on( 'error', function(error) {
-			console.log( 'Redis[' + slave.host + ':' + slave.port + '] error : ' + error );
+			log.error('[%d] %s:%d Redis Error : %s', process.pid, slave.host, slave.port, error.stack);
 		}).on( 'close', function(hadError) {
-			console.log( 'Redis[' + slave.host + ':' + slave.port + '] closed ' );
+			log.error('[%d] %s:%d Redis Close', process.pid, slave.host, slave.port);
 		});
 
 		client.select(0);

@@ -1,11 +1,16 @@
-var util = require('../utils/util');
+var util = require('haru-nodejs-util');
+
+var getHeader = util.common.getHeader;
+var sendError = util.common.sendError;
+var parseToJson = util.common.parseToJson;
+var parseToJsons = util.common.parseToJsons;
+
 var entityHandler = require('../handlers/entity');
 var schemaHandler = require('../handlers/schema');
-var sendError = require('../utils/util').sendError;
 
 
 exports.retrieve = function( req, res ) {
-	var input = util.getHeader(req);
+	var input = getHeader(req);
 
 	input.class = req.params.classname;
 	input._id = req.params._id;
@@ -14,14 +19,14 @@ exports.retrieve = function( req, res ) {
 			if( error ) { return sendError(error, res, errorCode.OTHER_CAUSE); } 
 			if( result == null ) {  return sendError(error, res, errorCode.MISSING_ENTITY_ID);  }
 
-			return res.json( util.parseToJson(schema, result) );
+			return res.json( parseToJson(schema, result) );
 		
 		});
 	});
 };
 
 exports.query = function( req, res ) {
-	var input = util.getHeader(req);
+	var input = getHeader(req);
 	var queryKeys = Object.keys(req.query);
 
 	if( queryKeys.length < 1 ) {
@@ -30,7 +35,7 @@ exports.query = function( req, res ) {
 				if( error ) { return sendError(error, res, errorCode.OTHER_CAUSE); } 
 				if( results == null) {  return sendError(res, errorCode.MISSING_ENTITY_ID);  }
 
-				return res.json(results);
+				return res.json({results: results});
 			});
 		});
 	} else {
@@ -45,11 +50,17 @@ exports.query = function( req, res ) {
 					entityHandler.retrieveObejctAll(input, function(error, results) {
 						if( error ) { return sendError(error, res, errorCode.OTHER_CAUSE); } 
 
-						return res.json( util.parseToJsons(schema, results) );
+						return res.json( {results: parseToJsons(schema, results)} );
 					});
 				});
-			} else {
-				return res.json('미구현 ㅋ');
+			} else if( key === 'where' ){
+
+				var condition = JSON.parse(req.query[key]);
+				entityHandler.query(input, condition, function(error, results) {
+					if( error ) { return sendError(error, res, errorCode.OTHER_CAUSE); } 
+
+					return res.json( {results: results} );
+				});
 			}
 		});
 	}
