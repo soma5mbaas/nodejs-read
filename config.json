@@ -1,5 +1,5 @@
 {
-	"port": 8100,
+	"port": 7000,
 	"namespace": "ns",
 	"database": {
 		"redis": {
@@ -17,6 +17,14 @@
 				{
 					"host": "localhost",
 					"port": 6402
+				}
+			]
+		},
+		"mongodb":{
+			"masters": [],
+			"slaves":[
+				{
+					"url": "mongodb://localhost:40000/haru"
 				}
 			]
 		}
