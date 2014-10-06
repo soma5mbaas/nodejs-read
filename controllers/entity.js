@@ -16,10 +16,10 @@ exports.retrieve = function( req, res ) {
 	input._id = req.params._id;
 	schemaHandler.retrieveSchema(input, function(error, schema) {
 		entityHandler.retrieveObejct(input, function(error, result) {
-			if( error ) { return sendError(error, res, errorCode.OTHER_CAUSE); } 
-			if( result == null ) {  return sendError(error, res, errorCode.MISSING_ENTITY_ID);  }
+			if( error ) { return sendError(res, errorCode.OTHER_CAUSE); } 
+			if( result == null ) {  return sendError(res, errorCode.MISSING_ENTITY_ID);  }
 
-			return res.json( parseToJson(schema, result) );
+			return res.jsonp( parseToJson(schema, result) );
 		
 		});
 	});
@@ -48,16 +48,15 @@ exports.query = function( req, res ) {
 
 				schemaHandler.retrieveSchema(input, function(error, schema) {
 					entityHandler.retrieveObejctAll(input, function(error, results) {
-						if( error ) { return sendError(error, res, errorCode.OTHER_CAUSE); } 
+						if( error ) { return sendError(res, errorCode.OTHER_CAUSE); } 
 
 						return res.json( {results: parseToJsons(schema, results)} );
 					});
 				});
 			} else if( key === 'where' ){
-
 				var condition = JSON.parse(req.query[key]);
 				entityHandler.query(input, condition, function(error, results) {
-					if( error ) { return sendError(error, res, errorCode.OTHER_CAUSE); } 
+					if( error ) { return sendError(res, errorCode.OTHER_CAUSE); } 
 
 					return res.json( {results: results} );
 				});
