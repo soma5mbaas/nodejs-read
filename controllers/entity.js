@@ -8,20 +8,26 @@ var parseToJsons = util.common.parseToJsons;
 var entityHandler = require('../handlers/entity');
 var schemaHandler = require('../handlers/schema');
 
+var async = require('async');
 
 exports.retrieve = function( req, res ) {
 	var input = getHeader(req);
 
 	input.class = req.params.classname;
 	input._id = req.params._id;
-	schemaHandler.retrieveSchema(input, function(error, schema) {
-		entityHandler.retrieveObejct(input, function(error, result) {
-			if( error ) { return sendError(res, errorCode.OTHER_CAUSE); } 
-			if( result == null ) {  return sendError(res, errorCode.MISSING_ENTITY_ID);  }
 
-			return res.jsonp( parseToJson(schema, result) );
-		
-		});
+	async.parallel([
+		function getSchema(callback) {
+			schemaHandler.retrieveSchema(input, callback);
+		},
+		function getEntity(callback) {	
+			entityHandler.retrieveObejct(input,callback);
+		}
+		], function(error, results) {
+			if( error ) { return sendError(res, errorCode.OTHER_CAUSE); } 
+			if( results == null ) {  return sendError(res, errorCode.MISSING_ENTITY_ID);  }
+
+			return res.json( parseToJson(results[0], results[1]) );
 	});
 };
 
@@ -64,6 +70,8 @@ exports.query = function( req, res ) {
 		});
 	}
 };
+
+
 
 
 /**
