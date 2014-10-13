@@ -25,7 +25,7 @@ exports.retrieve = function( req, res ) {
 		}
 		], function(error, results) {
 			if( error ) { return sendError(res, errorCode.OTHER_CAUSE); } 
-			if( results == null ) {  return sendError(res, errorCode.MISSING_ENTITY_ID);  }
+			if( results[1] == null ) {  return sendError(res, errorCode.MISSING_ENTITY_ID);  }
 
 			return res.json( parseToJson(results[0], results[1]) );
 	});
@@ -38,7 +38,7 @@ exports.query = function( req, res ) {
 	if( queryKeys.length < 1 ) {
 		schemaHandler.retrieveSchema(input, function(error, schema) {
 			entityHandler.retrieveObejctAll(input, function(error, results) {
-				if( error ) { return sendError(error, res, errorCode.OTHER_CAUSE); } 
+				if( error ) { return sendError(res, errorCode.OTHER_CAUSE); }
 				if( results == null) {  return sendError(res, errorCode.MISSING_ENTITY_ID);  }
 
 				return res.json({results: results});
