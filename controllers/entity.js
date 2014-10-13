@@ -41,7 +41,7 @@ exports.query = function( req, res ) {
 				if( error ) { return sendError(res, errorCode.OTHER_CAUSE); }
 				if( results == null) {  return sendError(res, errorCode.MISSING_ENTITY_ID);  }
 
-				return res.json({results: results});
+				return res.json( {results: parseToJsons(schema, results)} );
 			});
 		});
 	} else {
