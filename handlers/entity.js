@@ -16,7 +16,7 @@ exports.retrieveObejct = function(input, callback) {
 exports.retrieveObejctAll = function(input, callback) {
 	var entityKey = keys.entityKey(input.class, input.applicationId);
 
-	redis.zrange(entityKey,
+	redis.zrevrange(entityKey,
         (input.start == undefined ? range.RANGE_DEFALUT_START : input.start) ,
         (input.end == undefined ? range.RANGE_DEFALUT_END : input.end ), function(error, results) {
 		redis.hgetallMulti( input.applicationId, input.class, results, function(error, results) {
