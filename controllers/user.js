@@ -9,7 +9,7 @@ var parseToJson = require('haru-nodejs-util').common.parseToJson;
 var sendError = require('haru-nodejs-util').common.sendError;
 
 
-var userClass = 'User';
+var userClass = 'Users';
 
 
 exports.retrieve = function(req, res) {
