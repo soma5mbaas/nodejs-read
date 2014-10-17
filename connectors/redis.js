@@ -73,6 +73,15 @@ Redis.prototype.zrange = function( key, start, end, callback ) {
 	conn.zrange(key, start, end, callback);
 };
 
+Redis.prototype.zrevrange = function( key, start, end, callback ) {
+    var self = this;
+
+    var conn = self.getConnection();
+
+    conn.select(0);
+    conn.zrevrange(key, start, end, callback);
+};
+
 Redis.prototype.hgetallMulti = function( applicationId, className, objectIds, callback ) {
 	var self = this;
 	var conn = self.getConnection();
