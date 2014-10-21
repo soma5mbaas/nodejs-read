@@ -24,7 +24,7 @@ exports.retrieve = function( req, res ) {
 			entityHandler.retrieveObejct(input,callback);
 		}
 		], function(error, results) {
-			if( error ) { return sendError(res, errorCode.OTHER_CAUSE); } 
+			if( error ) { return sendError(res, error); }
 			if( results[1] == null ) {  return sendError(res, errorCode.MISSING_ENTITY_ID);  }
 
 			return res.json( parseToJson(results[0], results[1]) );
@@ -38,7 +38,7 @@ exports.query = function( req, res ) {
 	if( queryKeys.length < 1 ) {
 		schemaHandler.retrieveSchema(input, function(error, schema) {
 			entityHandler.retrieveObejctAll(input, function(error, results) {
-				if( error ) { return sendError(res, errorCode.OTHER_CAUSE); }
+				if( error ) { return sendError(res, error); }
 				if( results == null) {  return sendError(res, errorCode.MISSING_ENTITY_ID);  }
 
 				return res.json( {results: parseToJsons(schema, results)} );
@@ -54,35 +54,35 @@ exports.query = function( req, res ) {
 
 				schemaHandler.retrieveSchema(input, function(error, schema) {
 					entityHandler.retrieveObejctAll(input, function(error, results) {
-						if( error ) { return sendError(res, errorCode.OTHER_CAUSE); } 
+						if( error ) { return sendError(res, error); }
 
 						return res.json( {results: parseToJsons(schema, results)} );
 					});
 				});
 			} else if( key === 'where' ){
-				var condition = JSON.parse(req.query[key]);
-                var _limit = parseInt( req.query.limit || 50 );
-                var _count = parseInt(req.query.count);
+                    var condition = JSON.parse(req.query[key]);
+                    var _limit = parseInt( req.query.limit || 50 );
+                    var _count = parseInt(req.query.count);
 
-                async.series([
-                    function find(callback) {
-                        if(_limit === 0) { return callback(null, []); }
-                        entityHandler.query(input, condition, _limit, callback);
-                    },
-                    function count(callback) {
-                        if( !_count ) { return callback(null, null); }
+                    async.series([
+                        function find(callback) {
+                            if(_limit === 0) { return callback(null, []); }
+                            entityHandler.query(input, condition, _limit, callback);
+                        },
+                        function count(callback) {
+                            if( !_count ) { return callback(null, null); }
 
-                        entityHandler.count(input, condition, callback);
-                    }
-                ], function done(error, results) {
-                    if(error) { return sendError(res, error); }
+                            entityHandler.count(input, condition, callback);
+                        }
+                    ], function done(error, results) {
+                        if(error) { return sendError(res, error); }
 
-                    var output = { results: results[0] };
-                    if(results[1]) {
-                        output.count = results[1];
-                    }
-                    return res.json( output );
-                });
+                        var output = { results: results[0] };
+                        if(results[1]) {
+                            output.count = results[1];
+                        }
+                        return res.json( output );
+                    });
 			}
 		});
 	}
