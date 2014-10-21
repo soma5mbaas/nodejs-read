@@ -61,11 +61,28 @@ exports.query = function( req, res ) {
 				});
 			} else if( key === 'where' ){
 				var condition = JSON.parse(req.query[key]);
-				entityHandler.query(input, condition, function(error, results) {
-					if( error ) { return sendError(res, errorCode.OTHER_CAUSE); } 
+                var _limit = parseInt( req.query.limit || 50 );
+                var _count = parseInt(req.query.count);
 
-					return res.json( {results: results} );
-				});
+                async.series([
+                    function find(callback) {
+                        if(_limit === 0) { return callback(null, []); }
+                        entityHandler.query(input, condition, _limit, callback);
+                    },
+                    function count(callback) {
+                        if( !_count ) { return callback(null, null); }
+
+                        entityHandler.count(input, condition, callback);
+                    }
+                ], function done(error, results) {
+                    if(error) { return sendError(res, error); }
+
+                    var output = { results: results[0] };
+                    if(results[1]) {
+                        output.count = results[1];
+                    }
+                    return res.json( output );
+                });
 			}
 		});
 	}
