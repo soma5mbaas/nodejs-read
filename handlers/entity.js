@@ -33,8 +33,6 @@ exports.retrieveObejctAll = function(input, callback) {
 exports.query = function(input, condition, limit,callback) {
 	var collectionKey = keys.collectionKey(input.class, input.applicationId);
 
-    console.log(limit);
-
     store.get('mongodb').find( collectionKey, condition, limit, function(error, results) {
 		callback(error, results);
 	});
