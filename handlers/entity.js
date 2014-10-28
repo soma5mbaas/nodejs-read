@@ -1,5 +1,6 @@
 var store = require('haru-nodejs-store');
 
+var _ = require('underscore');
 
 
 var keys = require('haru-nodejs-util').keys;
@@ -19,6 +20,7 @@ exports.retrieveObejctAll = function(input, callback) {
     store.get('service').zrevrange(entityKey,
         (input.start == undefined ? range.RANGE_DEFALUT_START : input.start) ,
         (input.end == undefined ? range.RANGE_DEFALUT_END : input.end ), function(error, results) {
+            results = _.isArray(results) ? results : [];
             var multi = store.get('service').multi();
 
             for( var i = 0; i < results.length; i++ ) {
