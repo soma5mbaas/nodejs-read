@@ -6,6 +6,7 @@ exports.retrieve = function(input, callback) {
 
     store.get('public').hgetall( keys.configKey(input.applicationId), function(error, results) {
         if( error ) { return callback(error, results); }
+        if( !results ) { return callback(error, {}); }
 
         var objectKey = Object.keys(results);
 
