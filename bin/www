@@ -1,8 +1,15 @@
 #!/usr/bin/env node
-var debug = require('debug')('service');
 var cluster = require('cluster');
-
+var config = require('../config');
 var Logger  = require('haru-nodejs-util').Logger;
+var logConfig = require('../logConfig');
+
+
+/**
+ * Set Name Space
+ * Name Space [ 'ns', 'stage', 'releases' ]
+ * **/
+require('haru-nodejs-util').keys.setNameSpace(config.namespace);
 
 // Time Zone
 process.env.TZ = 'Asia/Seoul';
@@ -14,13 +21,13 @@ global.config = require('../config');
 global.errorCode = require('haru-nodejs-util').errorCode;
 
 // set logger
-global.log  = new Logger( __dirname +'/../logs/debug.log');
-global.loge = new Logger( __dirname +'/../logs/exception.log');
+global.log  = new Logger( __dirname +'/../logs/debug.log', logConfig[config.namespace]);
 
 // // Exception
-// process.on('uncaughtException', function(error) {
-// 	loge.error(error);
-// });
+process.on('uncaughtException', function(error) {
+	log.error('[%d] uncaughtException : ', process.pid, error.stack);
+});
+
 
 if( cluster.isMaster ) {
 	var processCount = require('os').cpus().length - 2;
