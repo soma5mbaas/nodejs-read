@@ -6,7 +6,8 @@ var index = require('./routes/index');
 
 var routeV1 = require('./routes/routeV1');
 
-var store = require('haru-nodejs-store');
+var store = require('haru-nodejs-store')
+var analysis = require('haru-nodejs-analysis');
 
 var app = express();
 
@@ -14,8 +15,10 @@ var app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 app.use(cors());
+app.use(analysis({analysis: config.mqueue.analysis}));
 
 store.connect(require('./config').store);
+
 
 app.use('/', index);
 app.use('/1', routeV1);
