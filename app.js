@@ -17,7 +17,7 @@ app.use(bodyParser.urlencoded());
 app.use(cors());
 app.use(analysis({analysis: config.mqueue.analysis}));
 
-store.connect(require('./config').store);
+store.connect(config.store);
 
 
 app.use('/', index);

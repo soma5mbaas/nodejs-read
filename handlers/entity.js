@@ -4,7 +4,7 @@ var getShardKey = require('haru-nodejs-util').common.getShardKey;
 var _ = require('underscore');
 
 var keys = require('haru-nodejs-util').keys;
-var range = require('../config').query.range;
+var range = config.query.range;
 var async = require('async');
 
 

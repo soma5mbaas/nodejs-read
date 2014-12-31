@@ -1,21 +1,20 @@
 #!/usr/bin/env node
 var cluster = require('cluster');
-var config = require('../config');
 var Logger  = require('haru-nodejs-util').Logger;
-var logConfig = require('../logConfig');
+var logConfig = require('../../logConfig');
 
+
+// Time Zone
+process.env.TZ = 'Asia/Seoul';
+
+// Global Config
+global.config = _getConfig();
 
 /**
  * Set Name Space
  * Name Space [ 'ns', 'stage', 'releases' ]
  * **/
 require('haru-nodejs-util').keys.setNameSpace(config.namespace);
-
-// Time Zone
-process.env.TZ = 'Asia/Seoul';
-
-// Global Config
-global.config = require('../config');
 
 // Global Error Code
 global.errorCode = require('haru-nodejs-util').errorCode;
@@ -52,3 +51,17 @@ if( cluster.isMaster ) {
 	});
 
 }
+
+function _getConfig() {
+	var globalConfig = require('../../config.json');
+	var appName = require('../package.json').name;
+	var config = globalConfig[globalConfig.namespace];
+
+	config.port = globalConfig[appName].port;
+	config.namespace = globalConfig.namespace;
+	config.sessionToken = globalConfig.sessionToken;
+	config.query = globalConfig.query;
+
+	return config;
+};
+
